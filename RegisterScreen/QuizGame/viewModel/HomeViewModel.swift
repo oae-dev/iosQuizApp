@@ -21,7 +21,7 @@ struct OpenRouterRequest: Codable {
 
 @MainActor
 class HomeViewModel: ObservableObject {
-    private let apiKey = "sk-or-v1-3ea527e68"
+    private let apiKey = "sk-or-v1-3ea5278"
     @Published var quizzes: [QuizDetailInfo] = []
     @Published var errorMessage = ""
     @Published var openSheet:Bool = false

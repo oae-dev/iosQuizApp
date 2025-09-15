@@ -10,6 +10,7 @@ import SwiftUI
 
 struct HomeScreen: View {
     @Binding var path: NavigationPath
+    @Environment(\.dismiss) var dismiss
     let userData: UserData
     
     let columns = [
@@ -116,6 +117,12 @@ struct HomeScreen: View {
             return configurator.quizConfig()
         }
     }
+    var allonlineQuizConfig: [[QuizScreenConfig]]{
+        vm.quizzes.map { quiz in
+            let configurator = QuizScreensConfigurator(quiz: quiz)
+            return configurator.quizConfig()
+        }
+    }
     @ObservedObject var vm = HomeViewModel()
     
     var body: some View {
@@ -194,55 +201,64 @@ struct HomeScreen: View {
             }
             ) {
                 ScrollView{
-                        if vm.loader{
-                            ProgressView()
-                        }
-                        if !vm.errorMessage.isEmpty {
-                            Text(vm.errorMessage)
-                                .foregroundColor(.red)
-                        }
-                        LazyVGrid(columns: [GridItem(.flexible()),
-                                            GridItem(.flexible())], pinnedViews: [.sectionHeaders])) {
-                            Section{
-                                ForEach(Array(vm.quizzes.enumerated()), id: \.element.id) { index, quiz in
-                                    BoxSelector(selected: quiz.selected,
-                                                ontap: { vm.quizzes[index].selected.toggle() },
-                                                quiztitle: quiz.title,
-                                                bg: Color.pink)
-                                }
-                                header {
-                                    Text("All Available Games")
-                                        .font(.headline)
-                                        .padding()
+                    
+                    if vm.loader{
+                        ProgressView()
+                    }
+                    if !vm.errorMessage.isEmpty {
+                        Text(vm.errorMessage)
+                            .foregroundColor(.red)
+                    }
+                    if !vm.quizzes.isEmpty {
+                        LazyVStack(pinnedViews: [.sectionHeaders]) {
+                            Section(
+                                header: Text("All Available Games")
+                                    .font(.headline)
+                                    .padding()
+                                    .background(.thickMaterial)
+                            ) {
+                                LazyVGrid(columns: [GridItem(.flexible()),
+                                                    GridItem(.flexible())]) {
+                                    ForEach(Array(vm.quizzes.enumerated()), id: \.element.id) { index, quiz in
+                                        BoxSelector(
+                                            selected: quiz.selected,
+                                            ontap: { vm.quizzes[index].selected.toggle() },
+                                            quiztitle: quiz.title,
+                                            bg: Color.pink
+                                        )
+                                    }
                                 }
                             }
-                            
-                            
-                            
                         }
                     }
                 }
                 .safeAreaInset(edge: .bottom) {
-                    Button {
-                        let selectedIndex = quizzes.indices.filter{quizzes[$0].selected}
-                        let selectedConfig = selectedIndex.flatMap{allQuizConfigs[$0]}
-                        if selectedIndex.count > 0 {
-                            path.append(QuizScreens.gameScreen(selectedConfig, userName: userData.name))
+                    if !vm.quizzes.isEmpty{
+                        Button {
+                            dismiss()
+                            let selectedIndex =
+                            vm.quizzes.indices.filter{vm.quizzes[$0].selected}
+                            let selectedConfig = selectedIndex.flatMap{allonlineQuizConfig[$0]}
+                            if selectedIndex.count > 0 {
+                                path.append(QuizScreens.gameScreen(selectedConfig, userName: userData.name))
+                            }
+                            print("\(selectedConfig)")
+                        } label: {
+                            Text("play")
+                                .font(.system(size: 25, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 100)
+                                .padding(.vertical, 15)
+                                .background(
+                                    Capsule()
+                                        .fill(.blue)
+                                )
                         }
-                        print("\(selectedConfig)")
-                    } label: {
-                        Text("play")
-                            .font(.system(size: 25, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 100)
-                            .padding(.vertical, 15)
-                            .background(
-                                Capsule()
-                                    .fill(.blue)
-                            )
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(.thickMaterial)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
+                    
                 }
                 
             }
@@ -274,7 +290,6 @@ struct HomeScreen: View {
         return image ?? UIImage()
     }
 }
-
 #Preview {
     HomeScreen(path: .constant(NavigationPath()), userData: UserData(name: "lovepreetSingh", age: "23"))
 }
