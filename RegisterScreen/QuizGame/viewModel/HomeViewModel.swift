@@ -25,14 +25,123 @@ class HomeViewModel: ObservableObject {
     @Published var quizzes: [QuizDetailInfo] = []
     @Published var errorMessage = ""
     @Published var openSheet:Bool = false
-    @Published var loader:Bool = false
-   
+    @Published var loader: Bool = false
+    @Published var showPlayBotton:Bool = false
+    @Published var search:String = ""
+    
     let colors: [Color] = [
         .red,  .blue, .indigo, .pink, .orange, .purple,  .yellow, .teal,  .orange
     ]
-    @Published var search:String = ""
-
-    func fetchQuiz() async {
+    @Published var defultQuizzes: [QuizDetailInfo] = [
+        QuizDetailInfo(
+            id: "1",
+            title: "Basic Math",
+            type: "math",
+            questions: [
+                QuizQuestion(
+                    id: "1", question: "What is 2 + 2?",
+                    options: ["3", "4", "5", "6"],
+                    correctAnswer: "4"
+                ),
+                QuizQuestion(
+                    id: "2", question: "What is 10 ÷ 2?",
+                    options: ["2", "4", "5", "10"],
+                    correctAnswer: "5"
+                ),
+                QuizQuestion(
+                    id: "3", question: "What is 5 × 3?",
+                    options: ["8", "10", "15", "20"],
+                    correctAnswer: "15"
+                )
+            ],
+            selected: false
+        ),
+        QuizDetailInfo(
+            id: "2",
+            title: "World History",
+            type: "history",
+            questions: [
+                QuizQuestion(
+                    id: "3", question: "Who was the first US president?",
+                    options: ["George Washington", "Abraham Lincoln", "John Adams", "Thomas Jefferson"],
+                    correctAnswer: "George Washington"
+                ),
+                QuizQuestion(
+                    id: "2", question: "When did World War II start?",
+                    options: ["1914", "1939", "1945", "1960"],
+                    correctAnswer: "1939"
+                ),
+                QuizQuestion(
+                    id: "3", question: "Who built the pyramids?",
+                    options: ["Romans", "Greeks", "Egyptians", "Mayans"],
+                    correctAnswer: "Egyptians"
+                )
+            ],
+            selected: false
+        ),
+        QuizDetailInfo(
+            id: "3",
+            title: "Advanced Math",
+            type: "math",
+            questions: [
+                QuizQuestion(
+                    id: "3", question: "Solve for x: 2x + 3 = 7",
+                    options: ["x = 1", "x = 2", "x = 3", "x = 4"],
+                    correctAnswer: "x = 2"
+                ),
+                QuizQuestion(
+                    id: "4", question: "What is ∫x² dx?",
+                    options: ["x³/3 + C", "2x", "x²/2 + C", "ln(x)"],
+                    correctAnswer: "x³/3 + C"
+                ),
+                QuizQuestion(
+                    id: "2", question: "What is d/dx of sin(x)?",
+                    options: ["cos(x)", "-cos(x)", "sin(x)", "-sin(x)"],
+                    correctAnswer: "cos(x)"
+                )
+            ],
+            selected: false
+        ),
+        QuizDetailInfo(
+            id: "4",
+            title: "Modern History",
+            type: "history",
+            questions: [
+                QuizQuestion(
+                    id: "34", question: "When did India gain independence?",
+                    options: ["1947", "1950", "1939", "1965"],
+                    correctAnswer: "1947"
+                ),
+                QuizQuestion(
+                    id: "s34", question: "Who was Napoleon?",
+                    options: ["French Emperor", "Italian Explorer", "German Chancellor", "Russian Tsar"],
+                    correctAnswer: "French Emperor"
+                ),
+                QuizQuestion(
+                    id: "34", question: "When did the Cold War end?",
+                    options: ["1989", "1945", "1962", "2001"],
+                    correctAnswer: "1989"
+                )
+            ],
+            selected: false
+        )
+    ]
+    @Published var mathQuizzes: [QuizDetailInfo] = []
+    @Published var historyQuizzes: [QuizDetailInfo] = []
+    @Published var biologyQuizzes: [QuizDetailInfo] = []
+    
+    func quizInSection(){
+        mathQuizzes = quizzes.filter{$0.type == "math"}
+        historyQuizzes = quizzes.filter{ $0.type == "history" }
+        biologyQuizzes = quizzes.filter{ $0.type == "biology" }
+    }
+    
+    
+    
+    func fetchAllQuizs() async {
+        loader = true
+            defer { loader = false }
+        print("start")
             guard let url = URL(string: "https://openrouter.ai/api/v1/chat/completions") else { return }
             
             let requestBody = OpenRouterRequest(
@@ -60,7 +169,7 @@ class HomeViewModel: ObservableObject {
             }
             
             """),
-                    .init(role: "user", content: "Generate 5 quizes about: \(search)")
+                    .init(role: "user", content: "Generate 10 quizes with each type: math, histoy, biology")
                 ]
             )
             
@@ -72,7 +181,7 @@ class HomeViewModel: ObservableObject {
                 request.httpBody = try JSONEncoder().encode(requestBody)
                 
                 let (data, _) = try await URLSession.shared.data(for: request)
-                
+
                 if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                    let choices = json["choices"] as? [[String: Any]],
                    let message = choices.first?["message"] as? [String: Any],
@@ -83,12 +192,15 @@ class HomeViewModel: ObservableObject {
                         .replacingOccurrences(of: "```json", with: "")
                         .replacingOccurrences(of: "```", with: "")
                         .trimmingCharacters(in: .whitespacesAndNewlines)
+                    loader = false
                     
                     if let jsonData = cleaned.data(using: .utf8) {
                         do {
                             let decoded = try JSONDecoder().decode([QuizDetailInfo].self, from: jsonData)
                             self.quizzes = decoded
+                            quizInSection()
                             print("✅ Decoded quiz:", decoded)
+                            print("end")
                         } catch {
                             print("❌ Decoding failed:", error)
                             errorMessage = "Decoding failed: \(error)"

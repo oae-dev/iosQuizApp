@@ -24,9 +24,19 @@ struct HomeTabBar: View {
                 }
             }
             
+            Tab{
+                SearchScreen()
+                    .tag(2)
+            }label: {
+                VStack{
+                    Image(systemName: "magnifyingglass.circle.fill")
+                    Text("Search")
+                }
+            }
+            
             Tab {
                 Color.yellow
-                    .tag(2)
+                    .tag(3)
             } label: {
                 VStack{
                     Image(systemName: "trophy.fill")
@@ -37,7 +47,7 @@ struct HomeTabBar: View {
             
             Tab {
                 Color.red
-                    .tag(3)
+                    .tag(4)
             } label: {
                 VStack{
                     Image(systemName: "person.crop.circle.fill")
@@ -47,6 +57,7 @@ struct HomeTabBar: View {
             }
 
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

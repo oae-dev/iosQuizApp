@@ -17,102 +17,8 @@ struct HomeScreen: View {
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-    @State var quizzes: [QuizDetailInfo] = [
-        QuizDetailInfo(
-            id: "1",
-            title: "Basic Math",
-            type: "math",
-            questions: [
-                QuizQuestion(
-                    id: "1", question: "What is 2 + 2?",
-                    options: ["3", "4", "5", "6"],
-                    correctAnswer: "4"
-                ),
-                QuizQuestion(
-                    id: "2", question: "What is 10 ÷ 2?",
-                    options: ["2", "4", "5", "10"],
-                    correctAnswer: "5"
-                ),
-                QuizQuestion(
-                    id: "3", question: "What is 5 × 3?",
-                    options: ["8", "10", "15", "20"],
-                    correctAnswer: "15"
-                )
-            ],
-            selected: false
-        ),
-        QuizDetailInfo(
-            id: "2",
-            title: "World History",
-            type: "history",
-            questions: [
-                QuizQuestion(
-                    id: "3", question: "Who was the first US president?",
-                    options: ["George Washington", "Abraham Lincoln", "John Adams", "Thomas Jefferson"],
-                    correctAnswer: "George Washington"
-                ),
-                QuizQuestion(
-                    id: "2", question: "When did World War II start?",
-                    options: ["1914", "1939", "1945", "1960"],
-                    correctAnswer: "1939"
-                ),
-                QuizQuestion(
-                    id: "3", question: "Who built the pyramids?",
-                    options: ["Romans", "Greeks", "Egyptians", "Mayans"],
-                    correctAnswer: "Egyptians"
-                )
-            ],
-            selected: false
-        ),
-        QuizDetailInfo(
-            id: "3",
-            title: "Advanced Math",
-            type: "math",
-            questions: [
-                QuizQuestion(
-                    id: "3", question: "Solve for x: 2x + 3 = 7",
-                    options: ["x = 1", "x = 2", "x = 3", "x = 4"],
-                    correctAnswer: "x = 2"
-                ),
-                QuizQuestion(
-                    id: "4", question: "What is ∫x² dx?",
-                    options: ["x³/3 + C", "2x", "x²/2 + C", "ln(x)"],
-                    correctAnswer: "x³/3 + C"
-                ),
-                QuizQuestion(
-                    id: "2", question: "What is d/dx of sin(x)?",
-                    options: ["cos(x)", "-cos(x)", "sin(x)", "-sin(x)"],
-                    correctAnswer: "cos(x)"
-                )
-            ],
-            selected: false
-        ),
-        QuizDetailInfo(
-            id: "4",
-            title: "Modern History",
-            type: "history",
-            questions: [
-                QuizQuestion(
-                    id: "34", question: "When did India gain independence?",
-                    options: ["1947", "1950", "1939", "1965"],
-                    correctAnswer: "1947"
-                ),
-                QuizQuestion(
-                    id: "s34", question: "Who was Napoleon?",
-                    options: ["French Emperor", "Italian Explorer", "German Chancellor", "Russian Tsar"],
-                    correctAnswer: "French Emperor"
-                ),
-                QuizQuestion(
-                    id: "34", question: "When did the Cold War end?",
-                    options: ["1989", "1945", "1962", "2001"],
-                    correctAnswer: "1989"
-                )
-            ],
-            selected: false
-        )
-    ]
     var allQuizConfigs: [[QuizScreenConfig]] {
-        quizzes.map { quiz in
+        vm.defultQuizzes.map { quiz in
             let configurator = QuizScreensConfigurator(quiz: quiz)
             return configurator.quizConfig()
         }
@@ -142,16 +48,7 @@ struct HomeScreen: View {
                     }
                 }
                 
-                SearchBar(value: $vm.search) {
-                    Task {
-                        print("click")
-                        vm.openSheet = true
-                        vm.loader = true
-                        await vm.fetchQuiz()
-                        vm.loader = false
-                        
-                    }
-                }
+
                 
                 VStack(alignment: .center){
                     Text("Chose your Options")
@@ -160,39 +57,37 @@ struct HomeScreen: View {
                 }
                 .frame(maxWidth: .infinity)
                 
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(0..<allQuizConfigs.count, id: \.self) { index in
-                        BoxSelector(selected: quizzes[index].selected,
-                                    ontap:{
-                            quizzes[index].selected.toggle()
-                        },
-                                    quiztitle: quizzes[index].title, bg: vm.colors[index])
-                    }
+                GameSection(title: "daily ", quizzes: $vm.defultQuizzes, colors: vm.colors)
+                if vm.loader{
+                    ProgressView()
+                } else {
+                    GameSection(title: "Math", quizzes: $vm.mathQuizzes, colors: vm.colors)
+                    GameSection(title: "History", quizzes: $vm.historyQuizzes, colors: vm.colors)
+                    GameSection(title: "Biology", quizzes: $vm.biologyQuizzes, colors: vm.colors)
                 }
                 Spacer()
-                
-                Button {
-                    let selectedIndex = quizzes.indices.filter{quizzes[$0].selected}
-                    let selectedConfig = selectedIndex.flatMap{allQuizConfigs[$0]}
-                    if selectedIndex.count > 0 {
-                        path.append(QuizScreens.gameScreen(selectedConfig, userName: userData.name))
+                if vm.showPlayBotton{
+                    Button {
+                        let selectedIndex = vm.defultQuizzes.indices.filter{vm.defultQuizzes[$0].selected}
+                        let selectedConfig = selectedIndex.flatMap{allQuizConfigs[$0]}
+                        if selectedIndex.count > 0 {
+                            path.append(QuizScreens.gameScreen(selectedConfig, userName: userData.name))
+                        }
+                        print("\(selectedConfig)")
+                    } label: {
+                        Text("play")
+                            .font(.system(size: 25, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 100)
+                            .padding(.vertical, 15)
+                            .background(
+                                Capsule()
+                                    .fill(.blue)
+                            )
                     }
-                    print("\(selectedConfig)")
-                } label: {
-                    Text("play")
-                        .font(.system(size: 25, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 100)
-                        .padding(.vertical, 15)
-                        .background(
-                            Capsule()
-                                .fill(.blue)
-                        )
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom)
-                
-                
             }
             .sheet(isPresented: $vm.openSheet,
                    onDismiss: {
@@ -265,14 +160,22 @@ struct HomeScreen: View {
             
         }
         .padding()
+        .navigationBarBackButtonHidden(true)
         .navigationTitle("")
-        .navigationBarBackButtonHidden()
         .frame(maxWidth: .infinity)
         .background(
             LinearGradient(colors: [.green, .red, .yellow, .accentColor], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
                 .padding(.bottom, 1)
         )
+        .onAppear {
+            Task {
+                
+                await vm.fetchAllQuizs()
+                print(vm.errorMessage)
+                
+            }
+        }
         
         
         
@@ -294,3 +197,32 @@ struct HomeScreen: View {
     HomeScreen(path: .constant(NavigationPath()), userData: UserData(name: "lovepreetSingh", age: "23"))
 }
 
+
+struct GameSection: View {
+    
+    let title: String
+    @Binding var quizzes: [QuizDetailInfo]
+    let colors: [Color]
+    
+    var body: some View {
+        VStack {
+            HStack{
+                Text(title)
+                Spacer()
+                Text("view all >")
+            }
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(quizzes.indices, id: \.self) { index in
+                        BoxSelector(selected: quizzes[index].selected,
+                                    ontap:{
+                            quizzes[index].selected.toggle()
+                        },
+                                    quiztitle: quizzes[index].title, bg: colors[index])
+                    }
+                }
+            }
+        }
+    }
+}
