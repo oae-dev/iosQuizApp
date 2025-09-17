@@ -83,6 +83,72 @@ struct HomeScreen: View {
                     .padding(.bottom)
                 }
             }
+//            .sheet(isPresented: $vm.openSheet,
+//                   onDismiss: {
+//                vm.errorMessage = ""
+//                vm.quizzes.removeAll()
+//            }
+//            ) {
+//                ScrollView{
+//                    
+//                    if vm.loader{
+//                        ProgressView()
+//                    }
+//                    if !vm.errorMessage.isEmpty {
+//                        Text(vm.errorMessage)
+//                            .foregroundColor(.red)
+//                    }
+//                    if !vm.quizzes.isEmpty {
+//                        LazyVStack(pinnedViews: [.sectionHeaders]) {
+//                            Section(
+//                                header: Text("All Available Games")
+//                                    .font(.headline)
+//                                    .padding()
+//                                    .background(.thickMaterial)
+//                            ) {
+//                                LazyVGrid(columns: [GridItem(.flexible()),
+//                                                    GridItem(.flexible())]) {
+//                                    ForEach(Array(vm.quizzes.enumerated()), id: \.element.id) { index, quiz in
+//                                        BoxSelector(
+//                                            selected: quiz.selected,
+//                                            ontap: { vm.quizzes[index].selected.toggle() },
+//                                            quiztitle: quiz.title,
+//                                            bg: Color.pink
+//                                        )
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                .safeAreaInset(edge: .bottom) {
+//                    if !vm.quizzes.isEmpty{
+//                        Button {
+//                            dismiss()
+//                            if !selectedConfigs.isEmpty {
+//                                path.append(QuizScreens.gameScreen(selectedConfigs, userName: userData.name))
+//                                print(selectedConfigs)
+//                            }
+//                        } label: {
+//                            Text("play")
+//                                .font(.system(size: 25, weight: .semibold))
+//                                .foregroundStyle(.white)
+//                                .padding(.horizontal, 100)
+//                                .padding(.vertical, 15)
+//                                .background(
+//                                    Capsule()
+//                                        .fill(.blue)
+//                                )
+//                        }
+//                        .frame(maxWidth: .infinity)
+//                        .padding()
+//                        .background(.thickMaterial)
+//                    }
+                    
+//                }
+//                
+//            }
+            
         }
         .padding()
         .navigationBarBackButtonHidden(true)

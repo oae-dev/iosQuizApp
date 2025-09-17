@@ -25,7 +25,7 @@ struct HomeTabBar: View {
             }
             
             Tab{
-                SearchScreen()
+                SearchScreen(path: $path, userData: userData)
                     .tag(2)
             }label: {
                 VStack{
