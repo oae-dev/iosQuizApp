@@ -36,7 +36,7 @@ struct SearchBar: View {
                     }
                 }
         }
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Color.black)
     }
 }
 

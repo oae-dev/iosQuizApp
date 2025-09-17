@@ -20,6 +20,7 @@ struct SearchScreen: View {
                     
                 }
             }
+            Spacer()
         }
     }
 }

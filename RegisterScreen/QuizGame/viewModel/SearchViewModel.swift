@@ -43,7 +43,7 @@ class SearchViewModel: ObservableObject{
             
             """),
                 .init(role: "user", content: "Generate quizes about: \(search)")
-            ]
+            ], max_tokens: 4000
         )
         
         do {

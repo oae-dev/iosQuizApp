@@ -16,6 +16,7 @@ struct OpenRouterMessage: Codable {
 struct OpenRouterRequest: Codable {
     let model: String
     let messages: [OpenRouterMessage]
+    let max_tokens: Int?
 }
 
 
@@ -25,8 +26,7 @@ class HomeViewModel: ObservableObject {
     @Published var quizzes: [QuizDetailInfo] = []
     @Published var errorMessage = ""
     @Published var openSheet:Bool = false
-    @Published var loader: Bool = false
-    @Published var showPlayBotton:Bool = false
+    @Published var loader: Bool = false 
     @Published var search:String = ""
     
     let colors: [Color] = [
@@ -169,8 +169,8 @@ class HomeViewModel: ObservableObject {
             }
             
             """),
-                    .init(role: "user", content: "Generate 10 quizes with each type: math, histoy, biology")
-                ]
+                    .init(role: "user", content: "Generate 7 quizes with each type: math, histoy, biology")
+                ], max_tokens: 4000
             )
             
             do {
