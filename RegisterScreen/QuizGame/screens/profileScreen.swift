@@ -6,64 +6,97 @@
 //
 
 import SwiftUI
+import _PhotosUI_SwiftUI
 
 struct profileScreen: View {
     let userData: UserData
-    @StateObject var vm = ProfileViewModel()
+    @StateObject private var vm: ProfileViewModel
+    
+    init(userData: UserData) {
+        self.userData = userData
+        _vm = StateObject(wrappedValue: ProfileViewModel(userData: userData))
+    }
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 15){
+        VStack(alignment: .leading, spacing: 45){
             Text("Profile")
-                .font(.system(size: 22, weight: .bold))
+                .font(.system(size: 40, weight: .bold))
             
-               
-            Image("bg")
-                .resizable()
-                .frame(width: 90, height: 90)
-                .clipped()
-                .clipShape(
-                    Circle()
-                )
-                .padding(1)
-                
-                .background(
-                    Circle()
-                        .foregroundStyle(Color.black)
-                )
-                .overlay(alignment: .bottomTrailing) {
-                    Image(systemName: "plus.circle.fill")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .foregroundStyle(Color.green)
-                        .padding(.trailing, 9)
-                        .padding(.bottom, 9)
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
+            ZStack(alignment: .bottomTrailing) {
+                            if let profileImage = vm.profileImage {
+                                Image(uiImage: profileImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 140, height: 140)
+                                    .clipShape(Circle())
+                            } else {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 140, height: 140)
+                                    .foregroundColor(.gray)
+                            }
+                            
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .foregroundStyle(Color.green)
+                                .padding(.trailing, 9)
+                                .padding(.bottom, 6)
+                                .onTapGesture {
+                                    vm.showPopUp = true
+                                }
+                        }
+                        .frame(maxWidth: .infinity)
             
-            Text(userData.name)
-            Text(userData.age)
-            myField
+            EditTableTextField(title: "UserName", isEdit: $vm.editUserName, field: $vm.userName)
+            EditTableTextField(title: "Email", isEdit: $vm.editEmail, field: $vm.email)
+            EditTableTextField(title: "DOB", isEdit: $vm.editDob, field: $vm.dob)
+            EditTableTextField(title: "Phone", isEdit: $vm.editPhoneNumber, field: $vm.phoneNumber)
+            
+            
             Spacer()
+            Button {
+                
+            } label: {
+                Text("save")
+                    .font(.system(size: 25, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 100)
+                    .padding(.vertical, 15)
+                    .background(
+                        Capsule()
+                            .fill(.blue)
+                    )
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)
-    }
-    
-    var myField: some View{
-        VStack{
-            HStack{
-                Text("Email: ")
-                
-                Text(vm.email)
-                
-                Spacer()
-                Image(systemName: "")
+        .confirmationDialog("Are You Want to Change Profile Image .", isPresented: $vm.showPopUp, titleVisibility: .visible) {
+            Button("Sure") {
+                vm.editUserName = false
+                vm.showImagePicker = true
+                print("upload")
             }
-            
-            Divider()
-                .padding(.vertical)
-                .foregroundStyle(Color.black)
+        }
+        .sheet(isPresented: $vm.showImagePicker) {
+            PhotosPicker("", selection: $vm.selectedItem)
+                .photosPickerStyle(.inline)
+        }
+        .onChange(of: vm.selectedItem) {
+            Task {
+                if let data = try? await vm.selectedItem?.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    await MainActor.run {
+                        vm.profileImage = uiImage
+                    }
+                }
+            }
         }
     }
+
 }
 
 #Preview {

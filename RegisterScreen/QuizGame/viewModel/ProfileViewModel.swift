@@ -6,10 +6,28 @@
 //
 
 import Foundation
+import UIKit
+import _PhotosUI_SwiftUI
 
 class ProfileViewModel: ObservableObject{
     @Published var showPopUp:Bool = false
+    @Published var showImagePicker:Bool = false
+    @Published var selectedItem: PhotosPickerItem?
+    @Published var profileImage: UIImage?
     @Published var email:String = "abc#fds"
     @Published var dob:String = ""
     @Published var phoneNumber:String = ""
+    @Published var userName: String = ""
+    
+    @Published var editDob:Bool = false
+    @Published var editPhoneNumber:Bool = false
+    @Published var editUserName:Bool = false
+    @Published var editEmail:Bool = false
+    
+   
+    
+    init(userData:UserData){
+        self.userName = userData.name
+        self.dob = userData.age
+    }
 }
