@@ -11,6 +11,16 @@ struct EditTableTextField: View {
     let title:String
     @Binding var isEdit:Bool
     @Binding var field: String
+    let onTickPress: (() -> Void)?
+    let keyboardType: (UIKeyboardType)?
+    
+    init(title: String, isEdit: Binding<Bool>, field: Binding<String>, onTickPress: (() -> Void)? = nil, keyboardType: UIKeyboardType? = nil) {
+            self.title = title
+            self._isEdit = isEdit
+            self._field = field
+            self.onTickPress = onTickPress
+            self.keyboardType = keyboardType
+        }
     
     var body: some View {
         VStack{
@@ -21,6 +31,7 @@ struct EditTableTextField: View {
                 
                 if isEdit {
                     TextField("", text: $field)
+                        .keyboardType(keyboardType ?? .default)
                         .overlay(alignment: .trailing) {
                             Image(systemName: "checkmark")
                                 .resizable()
@@ -36,11 +47,11 @@ struct EditTableTextField: View {
                     Text(field)
                         .foregroundStyle(Color.black.opacity(0.7))
                     
-                    
                     Spacer()
                     Image(systemName: "pencil")
                         .padding(.trailing)
                         .onTapGesture {
+                            onTickPress?()
                             isEdit = true
                         }
                 }
@@ -55,5 +66,5 @@ struct EditTableTextField: View {
 }
 
 #Preview {
-    EditTableTextField(title: "email", isEdit: .constant(true), field: .constant("ad2@gmail.com"))
+    EditTableTextField(title: "email", isEdit: .constant(true), field: .constant("ad2@gmail.com"), keyboardType: .default)
 }

@@ -12,8 +12,10 @@ import _PhotosUI_SwiftUI
 class ProfileViewModel: ObservableObject{
     @Published var showPopUp:Bool = false
     @Published var showImagePicker:Bool = false
+    @Published var showDatePicker:Bool = false
     @Published var selectedItem: PhotosPickerItem?
     @Published var profileImage: UIImage?
+    @Published var date: Date = Date()
     @Published var email:String = "abc#fds"
     @Published var dob:String = ""
     @Published var phoneNumber:String = ""
@@ -28,6 +30,11 @@ class ProfileViewModel: ObservableObject{
     
     init(userData:UserData){
         self.userName = userData.name
-        self.dob = userData.age
+    }
+    
+    func formater(date: Date) -> String {
+        let formater = DateFormatter()
+        formater.dateFormat = "dd MMM, YYYY"
+        return formater.string(from: date)
     }
 }
