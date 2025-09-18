@@ -46,7 +46,7 @@ struct HomeTabBar: View {
 
             
             Tab {
-                Color.red
+                profileScreen(userData: userData)
                     .tag(4)
             } label: {
                 VStack{
