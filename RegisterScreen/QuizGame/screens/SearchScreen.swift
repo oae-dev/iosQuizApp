@@ -10,7 +10,7 @@ import SwiftUI
 struct SearchScreen: View {
     @Binding var path: NavigationPath
     @ObservedObject var vm = SearchViewModel()
-    let userData: UserData
+    let userData: UsersData
     
     var selectedConfigs: [QuizScreenConfig] {
         (vm.quizzes)
@@ -64,7 +64,7 @@ struct SearchScreen: View {
                     if !vm.quizzes.isEmpty{
                         Button {
                             if !selectedConfigs.isEmpty {
-                                path.append(QuizScreens.gameScreen(selectedConfigs, userName: userData.name))
+                                path.append(QuizScreens.gameScreen(selectedConfigs, userName: userData.userName))
                                 print(selectedConfigs)
                             }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -94,5 +94,5 @@ struct SearchScreen: View {
 }
 
 #Preview {
-    SearchScreen(path: .constant(NavigationPath()), userData: UserData(name: "da", age: "33"))
+    SearchScreen(path: .constant(NavigationPath()), userData: UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: ""))
 }

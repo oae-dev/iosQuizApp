@@ -9,10 +9,10 @@ import SwiftUI
 import _PhotosUI_SwiftUI
 
 struct profileScreen: View {
-    let userData: UserData
+    let userData: UsersData
     @StateObject private var vm: ProfileViewModel
     
-    init(userData: UserData) {
+    init(userData: UsersData) {
         self.userData = userData
         _vm = StateObject(wrappedValue: ProfileViewModel(userData: userData))
     }
@@ -113,5 +113,5 @@ struct profileScreen: View {
 }
 
 #Preview {
-    profileScreen(userData: UserData(name: "lovepreet", age: "34"))
+    profileScreen(userData: UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: ""))
 }

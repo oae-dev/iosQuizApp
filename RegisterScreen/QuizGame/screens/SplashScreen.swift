@@ -10,7 +10,7 @@ import SwiftUI
 enum QuizScreens: Hashable, Equatable{
     
     case login
-    case home(userData:UserData)
+    case home(userData:UsersData)
     case gameScreen([QuizScreenConfig], userName: String)
     case result(score: Int, totalQuestions: Int, userName: String)
 }

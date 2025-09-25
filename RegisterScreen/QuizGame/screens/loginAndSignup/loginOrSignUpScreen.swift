@@ -12,16 +12,20 @@ struct loginOrSignUpScreen: View {
     @Binding var path: NavigationPath
     @State var email:String = ""
     @State var isValid: Bool? = true
-    @State var userData: UserData = UserData(name: "", age: "")
+    @State var isSignUpPage:Bool = false
     @ObservedObject var vm = loginViewModel()
+    let users = DbTable.shared.FetchUsers()
     var body: some View {
         
         
         ScrollView {
             
             VStack {
-//                loginSection
-                signUpSection
+                if isSignUpPage {
+                    signUpSection
+                } else {
+                    loginSection
+                }
             }
             .ignoresSafeArea()
             .padding()
@@ -71,7 +75,10 @@ struct loginOrSignUpScreen: View {
                 .foregroundStyle(Color.white)
             
             Button {
-                path.append(QuizScreens.home(userData: userData))
+//                path.append(QuizScreens.home(userData: userData))
+                for data in users {
+                    print(data)
+                }
                 print("login")
             } label: {
                 Text("LogIn")
@@ -88,6 +95,9 @@ struct loginOrSignUpScreen: View {
             Text("I haven't a account")
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .onTapGesture {
+                    isSignUpPage.toggle()
+                }
         }
     }
     
@@ -112,18 +122,19 @@ struct loginOrSignUpScreen: View {
                         vm.showImagePicker.toggle()
                     }
             }
-            TitileTextField(title: "Username", input: $email, unValid: $isValid)
+            TitileTextField(title: "Username", input: $vm.userName, unValid: $isValid)
             
-            TitileTextField(title: "Email", input: $email, keyBoardType: .numberPad, unValid: $isValid)
+            TitileTextField(title: "Email", input: $vm.email, keyBoardType: .numberPad, unValid: $isValid)
             
-            TitileTextField(title: "DOB", input: $email, unValid: $isValid)
+            TitileTextField(title: "DOB", input: $vm.dob, unValid: $isValid)
             
-            TitileTextField(title: "Phone", input: $email, unValid: $isValid)
+            TitileTextField(title: "Phone", input: $vm.phoneNumber, unValid: $isValid)
             
-            TitileTextField(title: "Password", input: $email, keyBoardType: .numberPad, unValid: $isValid)
+            TitileTextField(title: "Password", input: $vm.password, keyBoardType: .numberPad, unValid: $isValid)
             
             Button {
-                path.append(QuizScreens.home(userData: userData))
+                DbTable.shared.AddUser(email:vm.email, userName:vm.userName, password:vm.password, DOB:vm.dob, phone: vm.phoneNumber)
+//                path.append(QuizScreens.home(userData: userData))
                 print("SignUp")
             } label: {
                 Text("SignUp")
@@ -140,6 +151,9 @@ struct loginOrSignUpScreen: View {
             
             Text("Already, have a account")
                 .foregroundStyle(.white)
+                .onTapGesture {
+                    isSignUpPage.toggle()
+                }
         }
     }
 }

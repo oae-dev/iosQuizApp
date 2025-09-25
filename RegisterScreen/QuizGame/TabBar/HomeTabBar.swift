@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeTabBar: View {
     @Binding var path: NavigationPath
-    let userData: UserData
+    let userData: UsersData
     
     var body: some View {
         TabView {
@@ -62,5 +62,5 @@ struct HomeTabBar: View {
 }
 
 #Preview {
-    HomeTabBar(path: .constant(NavigationPath()), userData: UserData(name: "lo", age: "12"))
+    HomeTabBar(path: .constant(NavigationPath()), userData: UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: ""))
 }

@@ -28,8 +28,8 @@ class ProfileViewModel: ObservableObject{
     
    
     
-    init(userData:UserData){
-        self.userName = userData.name
+    init(userData:UsersData){
+        self.userName = userData.userName
     }
     
     func formater(date: Date) -> String {

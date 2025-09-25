@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		D76134132E8501C500BACAA8 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = D76134122E8501C500BACAA8 /* SQLite */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		28FE1BAE2E6C09FD00639E03 /* RegisterScreen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RegisterScreen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D76134132E8501C500BACAA8 /* SQLite in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = RegisterScreen;
 			packageProductDependencies = (
+				D76134122E8501C500BACAA8 /* SQLite */,
 			);
 			productName = RegisterScreen;
 			productReference = 28FE1BAE2E6C09FD00639E03 /* RegisterScreen.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 28FE1BA52E6C09FD00639E03;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D76134112E8501C500BACAA8 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 28FE1BAF2E6C09FD00639E03 /* Products */;
 			projectDirPath = "";
@@ -324,6 +333,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D76134112E8501C500BACAA8 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.15.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D76134122E8501C500BACAA8 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D76134112E8501C500BACAA8 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 28FE1BA62E6C09FD00639E03 /* Project object */;
 }
