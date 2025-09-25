@@ -37,7 +37,7 @@ struct SplashScreen: View {
             .navigationDestination(for: QuizScreens.self) { route in
                 switch route {
                 case .login :
-                    LoginScreen(path: $path)
+                    loginOrSignUpScreen(path: $path)
                     
                 case .home(let userData):
                     HomeTabBar(path: $path,userData: userData)
