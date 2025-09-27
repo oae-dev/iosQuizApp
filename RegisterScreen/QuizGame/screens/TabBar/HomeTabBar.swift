@@ -13,47 +13,21 @@ struct HomeTabBar: View {
     
     var body: some View {
         TabView {
-            Tab {
+            Tab ("Home", systemImage: "house.circle.fill") {
                 HomeScreen(path: $path, userData: userData)
-                    .tag(1)
-            } label: {
-                VStack{
-                    Image(systemName: "house.circle.fill")
-                        .resizable()
-                    Text("Home")
-                }
             }
             
-            Tab{
+            Tab(role: .search){
                 SearchScreen(path: $path, userData: userData)
-                    .tag(2)
-            }label: {
-                VStack{
-                    Image(systemName: "magnifyingglass.circle.fill")
-                    Text("Search")
-                }
             }
             
-            Tab {
+            Tab ("Results", systemImage: "trophy.fill"){
                 Color.yellow
-                    .tag(3)
-            } label: {
-                VStack{
-                    Image(systemName: "trophy.fill")
-                    Text("Results")
-                }
             }
 
             
-            Tab {
+            Tab ("profile", systemImage: "person.crop.circle.fill"){
                 profileScreen(userData: userData)
-                    .tag(4)
-            } label: {
-                VStack{
-                    Image(systemName: "person.crop.circle.fill")
-                        .resizable()
-                    Text("profile")
-                }
             }
 
         }

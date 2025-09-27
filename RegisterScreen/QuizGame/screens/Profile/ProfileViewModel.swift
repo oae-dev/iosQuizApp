@@ -16,7 +16,7 @@ class ProfileViewModel: ObservableObject{
     @Published var selectedItem: PhotosPickerItem?
     @Published var profileImage: UIImage?
     @Published var date: Date = Date()
-    @Published var email:String = "abc#fds"
+    @Published var email:String = ""
     @Published var dob:String = ""
     @Published var phoneNumber:String = ""
     @Published var userName: String = ""
@@ -30,6 +30,9 @@ class ProfileViewModel: ObservableObject{
     
     init(userData:UsersData){
         self.userName = userData.userName
+        self.dob = userData.DOB
+        self.email = userData.email
+        self.phoneNumber = userData.Phone
     }
     
     func formater(date: Date) -> String {

@@ -16,6 +16,7 @@ enum QuizScreens: Hashable, Equatable {
 
 struct SplashScreen: View {
     @State var path: NavigationPath = NavigationPath()
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     var body: some View {
         NavigationStack(path: $path) {
             VStack(spacing: 60){
@@ -25,8 +26,13 @@ struct SplashScreen: View {
                     .font(.system(size: 30))
             }
             .onAppear {
+                let userData = DbTable.shared.FetchUsers().first
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    path.append(QuizScreens.login)
+                    if !isLoggedIn {
+                        path.append(QuizScreens.login)
+                    } else {
+                        path.append(QuizScreens.home(userData: userData ?? UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: "x")))
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

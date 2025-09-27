@@ -11,6 +11,7 @@ import _PhotosUI_SwiftUI
 struct loginOrSignUpScreen: View {
     @Binding var path: NavigationPath
     @ObservedObject var vm = loginViewModel()
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     
     var body: some View {
         VStack {
@@ -73,7 +74,10 @@ struct loginOrSignUpScreen: View {
                 
                 if vm.error == nil {
                     print("valid")
-                    path.append(QuizScreens.home(userData: vm.validUserData(email: vm.email) ?? UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: "x")))
+                    path.append(QuizScreens.home(userData: vm.validUserData(email: vm.email) ?? UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: "")))
+                    
+                    isLoggedIn = true
+                    
                 } else {
                     print("unvalid")
                 }
@@ -152,6 +156,7 @@ struct loginOrSignUpScreen: View {
                     
                     path.append(QuizScreens.home(userData: vm.validUserData(email: vm.email) ?? UsersData(id: 1, email: vm.email, userName: vm.userName, password: vm.password, DOB: vm.dob, Phone: vm.phoneNumber)))
                     
+                    isLoggedIn = true
                 }
                 print("SignUp")
             } label: {
