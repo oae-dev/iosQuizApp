@@ -10,6 +10,7 @@ import _PhotosUI_SwiftUI
 import SwiftUI
 
 class loginViewModel: ObservableObject{
+    @Published var isSignUpPage:Bool = false
     @Published var showImagePicker:Bool = false
     @Published var selectedItem: PhotosPickerItem?
     @Published var profileImage: UIImage?
@@ -38,7 +39,7 @@ class loginViewModel: ObservableObject{
         if !userNameValid(userName: userName) {
             err["userName"] = "Invalid Username"
         }
-        if !passwordValid(password: password) {
+       if !passwordValid(password: password) {
             err["password"] = "Invalid Password (at least 6 characters)"
         }
         if !dobValid(dob: dob) {

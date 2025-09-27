@@ -10,29 +10,26 @@ import _PhotosUI_SwiftUI
 
 struct loginOrSignUpScreen: View {
     @Binding var path: NavigationPath
-    @State var isSignUpPage:Bool = false
     @ObservedObject var vm = loginViewModel()
     
     var body: some View {
-        
-        
-        ScrollView {
-            
-            VStack {
-                if isSignUpPage {
+        VStack {
+            if vm.isSignUpPage {
+                ScrollView {
                     signUpSection
-                } else {
-                    loginSection
                 }
+            } else {
+                loginSection
             }
-            .ignoresSafeArea()
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.indigo))
-            .padding()
-            
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(
+            Image("background")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+        )
         .navigationTitle("")
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $vm.showImagePicker) {
@@ -57,18 +54,9 @@ struct loginOrSignUpScreen: View {
         .onChange(of: vm.date, {
             vm.dob = vm.formater(date: vm.date)
         })
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(
-            Image("background")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-        )
-        
-        
     }
     
-    var loginSection: some View{
+    var loginSection: some View {
         VStack(alignment: .leading, spacing: 20){
             Text("Welcome To Login")
                 .font(.system(size: 30, weight: .bold))
@@ -89,7 +77,7 @@ struct loginOrSignUpScreen: View {
                 } else {
                     print("unvalid")
                 }
-
+                
                 for data in vm.users {
                     print(data)
                 }
@@ -110,9 +98,16 @@ struct loginOrSignUpScreen: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .onTapGesture {
-                    isSignUpPage.toggle()
+                    withAnimation(.bouncy) {
+                        vm.isSignUpPage.toggle()
+                    }
                 }
         }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                         .fill(Color.indigo)
+        )
     }
     
     var signUpSection: some View{
@@ -175,9 +170,16 @@ struct loginOrSignUpScreen: View {
             Text("Already, have a account")
                 .foregroundStyle(.white)
                 .onTapGesture {
-                    isSignUpPage.toggle()
+                    withAnimation(.bouncy) {
+                        vm.isSignUpPage.toggle()
+                    }
                 }
         }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                         .fill(Color.indigo)
+        )
     }
 }
 
