@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-enum QuizScreens: Hashable, Equatable{
-    
+enum QuizScreens: Hashable, Equatable {
     case login
     case home(userData:UsersData)
     case gameScreen([QuizScreenConfig], userName: String)
@@ -38,7 +37,6 @@ struct SplashScreen: View {
                 switch route {
                 case .login :
                     loginOrSignUpScreen(path: $path)
-                    
                 case .home(let userData):
                     HomeTabBar(path: $path,userData: userData)
                 case .gameScreen(let quizScreenConfig, let userName):
@@ -46,8 +44,8 @@ struct SplashScreen: View {
                 case .result(let score, let totalQuestions, let userName):
                     ResultScreen(score: score, totalQuestions: totalQuestions, userName: userName, path: $path)
                 }
-        }
-        
+            }
+            
             
         }
     }}

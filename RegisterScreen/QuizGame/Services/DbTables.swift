@@ -8,14 +8,7 @@
 import Foundation
 import SQLite
 
-struct UsersData: Hashable{
-    var id: Int
-    var email: String
-    var userName: String
-    var password: String
-    var DOB: String
-    var Phone: String
-}
+
 
 class DbTable {
     static let shared = DbTable()
@@ -32,11 +25,11 @@ class DbTable {
     init (){
         let createTableQuery = users.create(ifNotExists: true) { t in
             t.column(id, primaryKey: .autoincrement)
-            t.column(email)
+            t.column(email, unique: true)
             t.column(userName)
             t.column(password)
             t.column(DoB)
-            t.column(Phone)
+            t.column(Phone, unique: true)
         }
         
         do {

@@ -10,11 +10,9 @@ import _PhotosUI_SwiftUI
 
 struct loginOrSignUpScreen: View {
     @Binding var path: NavigationPath
-    @State var email:String = ""
-    @State var isValid: Bool? = true
     @State var isSignUpPage:Bool = false
     @ObservedObject var vm = loginViewModel()
-    let users = DbTable.shared.FetchUsers()
+    
     var body: some View {
         
         
@@ -51,6 +49,14 @@ struct loginOrSignUpScreen: View {
                 }
             }
         }
+        .sheet(isPresented: $vm.showDobPicker) {
+            DatePicker("", selection: $vm.date, displayedComponents: .date)
+                .pickerStyle(.wheel)
+                .labelsHidden()
+        }
+        .onChange(of: vm.date, {
+            vm.dob = vm.formater(date: vm.date)
+        })
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             Image("background")
@@ -67,16 +73,24 @@ struct loginOrSignUpScreen: View {
             Text("Welcome To Login")
                 .font(.system(size: 30, weight: .bold))
                 .foregroundStyle(.white)
-            TitileTextField(title: " Email", input: $email, unValid: $isValid)
+            TitileTextField(title: " Email", input: $vm.email, error: vm.errorBinding(for: "loginEmail"))
             
-            TitileTextField(title: "Password", input: $email, keyBoardType: .numberPad, unValid: $isValid)
+            TitileTextField(title: "Password", input: $vm.password, keyBoardType: .numberPad, error: vm.errorBinding(for: "loginPassword"))
             
             Text("Forget Password")
                 .foregroundStyle(Color.white)
             
             Button {
-//                path.append(QuizScreens.home(userData: userData))
-                for data in users {
+                vm.LoginValidEnterData()
+                
+                if vm.error == nil {
+                    print("valid")
+                    path.append(QuizScreens.home(userData: vm.validUserData(email: vm.email) ?? UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: "x")))
+                } else {
+                    print("unvalid")
+                }
+
+                for data in vm.users {
                     print(data)
                 }
                 print("login")
@@ -122,19 +136,28 @@ struct loginOrSignUpScreen: View {
                         vm.showImagePicker.toggle()
                     }
             }
-            TitileTextField(title: "Username", input: $vm.userName, unValid: $isValid)
+            TitileTextField(title: "Username", input: $vm.userName,  error: vm.errorBinding(for: "userName"))
             
-            TitileTextField(title: "Email", input: $vm.email, keyBoardType: .numberPad, unValid: $isValid)
+            TitileTextField(title: "Email", input: $vm.email, keyBoardType: .emailAddress,  error: vm.errorBinding(for: "email"))
             
-            TitileTextField(title: "DOB", input: $vm.dob, unValid: $isValid)
+            TitileTextField(title: "DOB", input: $vm.dob,  error: vm.errorBinding(for: "dob"), isReadOnly: true)
+                .onTapGesture {
+                    vm.showDobPicker.toggle()
+                }
             
-            TitileTextField(title: "Phone", input: $vm.phoneNumber, unValid: $isValid)
+            TitileTextField(title: "Phone", input: $vm.phoneNumber, keyBoardType: .numberPad,  error: vm.errorBinding(for: "phoneNumber"))
             
-            TitileTextField(title: "Password", input: $vm.password, keyBoardType: .numberPad, unValid: $isValid)
+            TitileTextField(title: "password", input: $vm.password, keyBoardType: .numberPad,  error: vm.errorBinding(for: "password"))
             
             Button {
-                DbTable.shared.AddUser(email:vm.email, userName:vm.userName, password:vm.password, DOB:vm.dob, phone: vm.phoneNumber)
-//                path.append(QuizScreens.home(userData: userData))
+                vm.SignUpValidEnterData()
+                
+                if vm.error == nil {
+                    DbTable.shared.AddUser(email:vm.email, userName:vm.userName, password:vm.password, DOB:vm.dob, phone: vm.phoneNumber)
+                    
+                    path.append(QuizScreens.home(userData: vm.validUserData(email: vm.email) ?? UsersData(id: 1, email: vm.email, userName: vm.userName, password: vm.password, DOB: vm.dob, Phone: vm.phoneNumber)))
+                    
+                }
                 print("SignUp")
             } label: {
                 Text("SignUp")

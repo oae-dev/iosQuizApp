@@ -1,30 +1,30 @@
+////
+////  HomeLoginView.swift
+////  ios26
+////
+////  Created by Dev on 06/09/25.
+////
 //
-//  HomeLoginView.swift
-//  ios26
+//import SwiftUI
 //
-//  Created by Dev on 06/09/25.
+//struct HomeLoginView: View {
+//    @Binding var path: [Screens]
+//    @StateObject var viewModel:LoginViewModel = LoginViewModel()
+//    var body: some View {
+//        VStack(spacing: 12) {
+//            Text("Please Login")
+//                .font(.title)
+//            TitileTextField(title: "Email", input: $viewModel.email, keyBoardType: .emailAddress )
+//            TitileTextField(title: "Phone Number", input: $viewModel.phoneNumber, keyBoardType: .phonePad,  )
+//            TitileTextField(title: "Password", input: $viewModel.password,secure: true)
+//            Button("Login") {
+//                path.append(.register)
+//            }
+//            .buttonStyle(.borderedProminent)
+//        }.padding(.horizontal, 20)
+//    }
+//}
 //
-
-import SwiftUI
-
-struct HomeLoginView: View {
-    @Binding var path: [Screens]
-    @StateObject var viewModel:LoginViewModel = LoginViewModel()
-    var body: some View {
-        VStack(spacing: 12) {
-            Text("Please Login")
-                .font(.title)
-            TitileTextField(title: "Email", input: $viewModel.email, keyBoardType: .emailAddress, unValid: .constant(false) )
-            TitileTextField(title: "Phone Number", input: $viewModel.phoneNumber, keyBoardType: .phonePad, unValid: .constant(false) )
-            TitileTextField(title: "Password", input: $viewModel.password,secure: true, unValid: .constant(false))
-            Button("Login") {
-                path.append(.register)
-            }
-            .buttonStyle(.borderedProminent)
-        }.padding(.horizontal, 20)
-    }
-}
-
-#Preview {
-    HomeLoginView(path: .constant([]))
-}
+//#Preview {
+//    HomeLoginView(path: .constant([]))
+//}

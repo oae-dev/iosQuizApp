@@ -12,14 +12,32 @@ struct TitileTextField: View {
     @Binding var input:String
     var keyBoardType:UIKeyboardType? = .default
     var secure:Bool? = false
-    @Binding var unValid:Bool?
+    @Binding var error:String?
+    var isReadOnly: Bool? = false
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(title)
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(unValid ?? false ? .black : .red)
-            if secure ?? false {
+            HStack{
+                Text(title)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle((error == nil) ? .black : .red)
+                
+                Spacer()
+                
+                if let error = error, !error.isEmpty {
+                    Text(error)
+                        .font(.system(size: 14))
+                        .foregroundStyle(.red)
+                }
+            }
+            if  isReadOnly ?? false {
+                HStack {
+                    Text(input)
+                        .padding(.top, input.isEmpty ? 16 : 3)
+                    Spacer()
+                }
+                .contentShape(Rectangle())
+            } else if secure ?? false {
                 SecureField("", text: $input)
                     .keyboardType(keyBoardType ?? .default)
             } else {
@@ -29,14 +47,14 @@ struct TitileTextField: View {
             
             Divider()
                 .frame(height: 1)
-                .background(unValid ?? false ? .black : .red)
+                .background((error == nil) ?  .black : .red)
         }
-//        .onChange(of: input) { oldValue, newValue in
-//            unValid = true
-//        }
+        .onChange(of: input) {
+            error = nil
+        }
     }
 }
 
 #Preview {
-    TitileTextField(title:"Email", input: .constant("a"), unValid: .constant(false))
+    TitileTextField(title:"Email", input: .constant("a"), error: .constant("errpr"))
 }
