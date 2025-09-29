@@ -22,12 +22,12 @@ struct HomeTabBar: View {
             }
             
             Tab ("Results", systemImage: "trophy.fill"){
-                Color.yellow
+                TotalResultsScreen()
             }
 
             
-            Tab ("profile", systemImage: "person.crop.circle.fill"){
-                profileScreen(userData: userData)
+            Tab ("Settings", systemImage: "gear"){
+                Settings(user: userData)
             }
 
         }

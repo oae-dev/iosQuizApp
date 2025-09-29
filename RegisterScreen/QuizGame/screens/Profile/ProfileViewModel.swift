@@ -40,4 +40,9 @@ class ProfileViewModel: ObservableObject{
         formater.dateFormat = "dd MMM, YYYY"
         return formater.string(from: date)
     }
+    
+    func userDataChanged(user: UsersData) -> Bool {
+        let matched = user.email == self.email && user.userName == self.userName && user.DOB == self.dob && user.Phone == self.phoneNumber
+        return matched
+    }
 }

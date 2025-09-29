@@ -69,4 +69,21 @@ class DbTable {
         
         return data
     }
+    
+    func updateUser(userId: Int64, newEmail: String, newUserName: String, newDOB: String, newPhone: String) {
+        let user = users.filter(id == userId)
+        
+        do {
+            try db.db.run(user.update(
+                email <- newEmail,
+                userName <- newUserName,
+                DoB <- newDOB,
+                Phone <- newPhone
+            ))
+            print("User updated successfully")
+        } catch {
+            print("Update failed: \(error)")
+        }
+    }
+    
 }

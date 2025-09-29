@@ -60,7 +60,11 @@ struct profileScreen: View {
             
             Spacer()
             Button {
-                
+                if !vm.userDataChanged(user: userData) {
+                    DbTable.shared.updateUser(userId: Int64(userData.id), newEmail: vm.email, newUserName: vm.userName, newDOB: vm.dob, newPhone: vm.phoneNumber)
+                } else {
+                    print("data not Changed")
+                }
             } label: {
                 Text("save")
                     .font(.system(size: 25, weight: .semibold))
