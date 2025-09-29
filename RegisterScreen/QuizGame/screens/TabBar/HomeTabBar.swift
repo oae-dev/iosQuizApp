@@ -27,7 +27,7 @@ struct HomeTabBar: View {
 
             
             Tab ("Settings", systemImage: "gear"){
-                Settings(user: userData)
+                Settings(path: $path, user: userData)
             }
 
         }

@@ -19,8 +19,6 @@ struct profileScreen: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 45){
-            Text("Profile")
-                .font(.system(size: 40, weight: .bold))
             
             ZStack(alignment: .bottomTrailing) {
                 if let profileImage = vm.profileImage {
@@ -79,6 +77,7 @@ struct profileScreen: View {
             .frame(maxWidth: .infinity)
             .padding(.bottom)
         }
+        .navigationTitle("Profile")
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)
         .confirmationDialog("Are You Want to Change Profile Image .", isPresented: $vm.showPopUp, titleVisibility: .visible) {
@@ -113,7 +112,6 @@ struct profileScreen: View {
             vm.dob = vm.formater(date: vm.date)
         }
     }
-    
 }
 
 #Preview {
