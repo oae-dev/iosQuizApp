@@ -46,6 +46,7 @@ struct profileScreen: View {
                     }
             }
             .frame(maxWidth: .infinity)
+            .padding(.top, 40)
             
             EditTableTextField(title: "UserName", isEdit: $vm.editUserName, field: $vm.userName)
             EditTableTextField(title: "Email", isEdit: $vm.editEmail, field: $vm.email, keyboardType: .emailAddress)
@@ -110,6 +111,13 @@ struct profileScreen: View {
         }
         .onChange(of: vm.date) {
             vm.dob = vm.formater(date: vm.date)
+        }
+        .background {
+         ZStack {
+             Color.red
+                 .ignoresSafeArea()
+                BackGroundCurves()
+            }
         }
     }
 }
