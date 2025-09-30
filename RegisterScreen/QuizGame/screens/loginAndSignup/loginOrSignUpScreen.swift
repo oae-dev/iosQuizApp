@@ -70,11 +70,12 @@ struct loginOrSignUpScreen: View {
                 .foregroundStyle(Color.white)
             
             Button {
+                vm.loadUsers()
                 vm.LoginValidEnterData()
                 
                 if vm.error == nil {
                     print("valid")
-                    path.append(QuizScreens.home(userData: vm.validUserData(email: vm.email) ?? UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: "")))
+                    path.append(QuizScreens.home(userData: vm.validUserData(emailOrUser: vm.email)! ))
                     
                     isLoggedIn = true
                     
@@ -149,14 +150,20 @@ struct loginOrSignUpScreen: View {
             TitileTextField(title: "password", input: $vm.password, keyBoardType: .numberPad,  error: vm.errorBinding(for: "password"))
             
             Button {
-                vm.SignUpValidEnterData()
+                vm.validateSignUpData()
                 
                 if vm.error == nil {
-                    DbTable.shared.AddUser(email:vm.email, userName:vm.userName, password:vm.password, DOB:vm.dob, phone: vm.phoneNumber)
+                    CoreDataManager.shared.saveUser(userdata: UsersData(email: vm.email, userName: vm.userName, password: vm.password, DOB: vm.dob, Phone: vm.phoneNumber))
                     
-                    path.append(QuizScreens.home(userData: vm.validUserData(email: vm.email) ?? UsersData(id: 1, email: vm.email, userName: vm.userName, password: vm.password, DOB: vm.dob, Phone: vm.phoneNumber)))
+                    vm.loadUsers()
+                    
+                    if let user = vm.validUserData(emailOrUser: vm.email) {
+                        path.append(QuizScreens.home(userData: user))
+                    }
                     
                     isLoggedIn = true
+                    let printl = CoreDataManager.shared.fetchUsers()
+                    print("lll \(printl)")
                 }
                 print("SignUp")
             } label: {

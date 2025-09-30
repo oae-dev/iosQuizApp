@@ -28,11 +28,11 @@ class ProfileViewModel: ObservableObject{
     
    
     
-    init(userData:UsersData){
-        self.userName = userData.userName
-        self.dob = userData.DOB
-        self.email = userData.email
-        self.phoneNumber = userData.Phone
+    init(userData:UsersInfo){
+        self.userName = userData.userName ?? ""
+        self.dob = userData.dob ?? ""
+        self.email = userData.email ?? ""
+        self.phoneNumber = userData.phoneNumber ?? ""
     }
     
     func formater(date: Date) -> String {
@@ -41,8 +41,8 @@ class ProfileViewModel: ObservableObject{
         return formater.string(from: date)
     }
     
-    func userDataChanged(user: UsersData) -> Bool {
-        let matched = user.email == self.email && user.userName == self.userName && user.DOB == self.dob && user.Phone == self.phoneNumber
-        return matched
-    }
+//    func userDataChanged(user: UsersData) -> Bool {
+//        let matched = user.email == self.email && user.userName == self.userName && user.DOB == self.dob && user.Phone == self.phoneNumber
+//        return matched
+//    }
 }

@@ -12,7 +12,7 @@ struct HomeScreen: View {
     @Binding var path: NavigationPath
     @Environment(\.dismiss) var dismiss
     @StateObject var vm = HomeViewModel()
-    let userData: UsersData
+    let userData: UsersInfo
     var showPlayButton: Bool {
         !selectedConfigs.isEmpty
     }
@@ -40,7 +40,7 @@ struct HomeScreen: View {
                         Text("Welcome to play")
                             .font(.system(size: 15))
                         
-                        Text(userData.userName)
+                        Text(userData.userName ?? "")
                             .font(.system(size: 25, weight: .heavy))
                     }
                 }
@@ -64,7 +64,7 @@ struct HomeScreen: View {
                 if showPlayButton{
                     Button {
                         if !selectedConfigs.isEmpty {
-                            path.append(QuizScreens.gameScreen(selectedConfigs, userName: userData.userName))
+                            path.append(QuizScreens.gameScreen(selectedConfigs, userName: userData.userName ?? ""))
                             print(selectedConfigs)
                         }
                         print("\(selectedConfigs)")
@@ -118,7 +118,16 @@ struct HomeScreen: View {
     }
 }
 #Preview {
-    HomeScreen(path: .constant(NavigationPath()), userData: UsersData(id: 1, email: "lo@2Gmila.com", userName: "love", password: "", DOB: "", Phone: ""))
+    let context = CoreDataManager.shared.container.viewContext
+    
+    let previewUser = UsersInfo(context: context)
+    previewUser.email = "test@example.com"
+    previewUser.userName = "PreviewUser"
+    previewUser.password = "123456"
+    previewUser.dob = "01 Jan, 2000"
+    previewUser.phoneNumber = "1234567890"
+    
+    return HomeScreen(path: .constant(NavigationPath()), userData: previewUser)
 }
 
 

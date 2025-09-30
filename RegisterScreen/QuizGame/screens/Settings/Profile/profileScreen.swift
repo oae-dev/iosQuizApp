@@ -9,10 +9,10 @@ import SwiftUI
 import _PhotosUI_SwiftUI
 
 struct profileScreen: View {
-    let userData: UsersData
+    let userData: UsersInfo
     @StateObject private var vm: ProfileViewModel
     
-    init(userData: UsersData) {
+    init(userData: UsersInfo) {
         self.userData = userData
         _vm = StateObject(wrappedValue: ProfileViewModel(userData: userData))
     }
@@ -59,11 +59,11 @@ struct profileScreen: View {
             
             Spacer()
             Button {
-                if !vm.userDataChanged(user: userData) {
-                    DbTable.shared.updateUser(userId: Int64(userData.id), newEmail: vm.email, newUserName: vm.userName, newDOB: vm.dob, newPhone: vm.phoneNumber)
-                } else {
-                    print("data not Changed")
-                }
+//                if !vm.userDataChanged(user: userData) {
+//                    DbTable.shared.updateUser(userId: Int64(userData.id), newEmail: vm.email, newUserName: vm.userName, newDOB: vm.dob, newPhone: vm.phoneNumber)
+//                } else {
+//                    print("data not Changed")
+//                }
             } label: {
                 Text("save")
                     .font(.system(size: 25, weight: .semibold))
@@ -122,6 +122,6 @@ struct profileScreen: View {
     }
 }
 
-#Preview {
-    profileScreen(userData: UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: ""))
-}
+//#Preview {
+//    profileScreen(userData: UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: ""))
+//}

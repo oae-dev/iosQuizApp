@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Settings: View {
     @Binding var path : NavigationPath
-    let user: UsersData
+    let user: UsersInfo
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = true
     
     private var settingsList: [SettingsItem] {
@@ -55,5 +55,14 @@ struct Settings: View {
 }
 
 #Preview {
-    Settings(path: .constant(NavigationPath()), user: UsersData(id: 1, email: "", userName: "", password: "", DOB: "", Phone: ""))
+    let context = CoreDataManager.shared.container.viewContext
+    
+    let previewUser = UsersInfo(context: context)
+    previewUser.email = "test@example.com"
+    previewUser.userName = "PreviewUser"
+    previewUser.password = "123456"
+    previewUser.dob = "01 Jan, 2000"
+    previewUser.phoneNumber = "1234567890"
+    
+    return Settings(path: .constant(NavigationPath()), user: previewUser)
 }

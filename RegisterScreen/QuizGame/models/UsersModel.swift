@@ -8,7 +8,6 @@
 import Foundation
 
 struct UsersData: Hashable{
-    var id: Int
     var email: String
     var userName: String
     var password: String
