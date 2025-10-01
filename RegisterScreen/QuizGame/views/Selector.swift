@@ -10,8 +10,9 @@ import SwiftUI
 struct Selector: View {
     var selected: Bool
     var ontap: () -> ()
-    var quiztitle: String
+    var optionTitle: String
     var wrongAnswer: Bool?
+    var correctAnswer: Bool
     
     var body: some View {
         HStack{
@@ -21,7 +22,7 @@ struct Selector: View {
                 .foregroundStyle(wrongAnswer ?? false ? .red :selected ? .green : Color.clear)
                 .padding(.trailing, 20)
             
-            Text("\(quiztitle)")
+            Text("\(optionTitle)")
                 .font(.system(size: 20, weight: .bold))
                 
             Spacer()
@@ -40,6 +41,10 @@ struct Selector: View {
                 .stroke(Color.green, lineWidth: 2)
             : Capsule()
                 .stroke(Color.blue, lineWidth: 2)
+            if correctAnswer {
+                Capsule()
+                    .stroke(Color.green, lineWidth: 2)
+            }
 
         })
         .onTapGesture {
@@ -49,5 +54,5 @@ struct Selector: View {
 }
 
 #Preview {
-    Selector(selected: true, ontap:{print("")}, quiztitle: "math")
+    Selector(selected: true, ontap:{print("")}, optionTitle: "math", correctAnswer: true)
 }

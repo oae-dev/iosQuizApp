@@ -136,7 +136,19 @@ class HomeViewModel: ObservableObject {
         biologyQuizzes = quizzes.filter{ $0.type == "biology" }
     }
     
-    
+    func deselect(quizzes: [QuizDetailInfo]) -> [QuizDetailInfo] {
+        quizzes.map { quiz in
+            var updated = quiz
+            updated.selected = false
+            return updated
+        }
+    }
+    func deselectAll(){
+        defultQuizzes = deselect(quizzes: defultQuizzes)
+        mathQuizzes = deselect(quizzes: mathQuizzes)
+        historyQuizzes = deselect(quizzes: historyQuizzes)
+        biologyQuizzes = deselect(quizzes: biologyQuizzes)
+    }
     
     func fetchAllQuizs() async {
         loader = true

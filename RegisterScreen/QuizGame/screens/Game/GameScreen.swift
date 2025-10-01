@@ -12,30 +12,38 @@ struct GameScreen: View {
     @StateObject var vm = GameViewModel()
     var allQuizConfigs: [QuizScreenConfig]
     let userName: String
+    var currentQuiz: QuizScreenConfig {
+        allQuizConfigs[vm.currentScreen]
+    }
+    
+    var currentQuestion: QuizQuestion {
+        currentQuiz.questions[vm.currentQuestion]
+    }
     
     var body: some View {
         VStack{
-            Text(allQuizConfigs[vm.currentScreen].title)
+            Text(currentQuiz.title)
                 .font(.system(size: 40, weight: .bold))
             
-            Text("Question - \(vm.currentQuestion + 1) / \(allQuizConfigs[vm.currentScreen].questions.count)")
+            Text("Question - \(vm.currentQuestion + 1) / \(currentQuiz.questions.count)")
                 .font(.system(size: 30, weight: .bold))
             
             Spacer()
             
-            Text(allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].question)
+            Text(currentQuestion.question)
                 .font(.system(size: 40, weight: .bold))
             
-            let options = allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].options
-            let correctAnswer = allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].correctAnswer
-            ForEach(0..<options.count) { index in
-                let option = options[index]
-                let iswrong = vm.showAnswer && option == vm.selectedAnswer && option != correctAnswer
-
+            ForEach(currentQuestion.options, id: \.self) { option in
+                let isWrong = vm.showAnswer && option == vm.selectedAnswer && option != currentQuestion.correctAnswer
+                let isCorrect = vm.showAnswer && option == currentQuestion.correctAnswer
                 
-                Selector(selected: options[index] == vm.selectedAnswer, ontap: {
-                    vm.selectedAnswer = options[index]
-                }, quiztitle: allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].options[index], wrongAnswer: iswrong)
+                Selector(
+                    selected: option == vm.selectedAnswer,
+                    ontap: { vm.selectedAnswer = option },
+                    optionTitle: option,
+                    wrongAnswer: isWrong,
+                    correctAnswer: isCorrect
+                )
             }
             
             Spacer()
@@ -43,7 +51,7 @@ struct GameScreen: View {
             Button {
                 vm.showAnswer = true
                 
-                if vm.selectedAnswer == correctAnswer {
+                if vm.selectedAnswer == currentQuestion.correctAnswer {
                     vm.score += 1
                 }
                 
@@ -51,18 +59,14 @@ struct GameScreen: View {
                     vm.totalQuestions += 1
                     vm.showAnswer = false
                     vm.selectedAnswer = ""
-                    if vm.currentQuestion < allQuizConfigs[vm.currentScreen].questions.count - 1{
+                    if vm.currentQuestion < currentQuiz.questions.count - 1 {
                         withAnimation (.snappy){
                             vm.currentQuestion += 1
                         }
-                        
-                        vm.textToSpeach(allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].question)
-                        
-                    }
-                    else if vm.currentScreen == allQuizConfigs.count - 1{
+                        vm.textToSpeach(currentQuestion.question)
+                    } else if vm.currentScreen == allQuizConfigs.count - 1 {
                         path.append(QuizScreens.result(score: vm.score, totalQuestions: vm.totalQuestions, userName: userName))
-                    }
-                    else {
+                    } else {
                         withAnimation(.bouncy){
                             vm.currentScreen += 1
                         }
@@ -71,10 +75,8 @@ struct GameScreen: View {
                         print("Next Screen")
                     }
                 }
-                
-                
             } label: {
-                Text("play")
+                Text("Submit")
                     .font(.system(size: 25, weight: .semibold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 100)
@@ -86,7 +88,7 @@ struct GameScreen: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom)
-             
+            .disabled(vm.selectedAnswer.isEmpty)
         }
         .padding(.horizontal)
         .navigationTitle("")
@@ -112,7 +114,7 @@ struct GameScreen: View {
             
         }
         .onAppear {
-            vm.textToSpeach(allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].question)
+            vm.textToSpeach(currentQuestion.question)
         }
     }
 }

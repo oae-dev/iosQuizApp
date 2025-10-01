@@ -65,9 +65,11 @@ struct HomeScreen: View {
                     Button {
                         if !selectedConfigs.isEmpty {
                             path.append(QuizScreens.gameScreen(selectedConfigs, userName: userData.userName ?? ""))
+                            
+                            
                             print(selectedConfigs)
                         }
-                        print("\(selectedConfigs)")
+                        vm.deselectAll()
                     } label: {
                         Text("play")
                             .font(.system(size: 25, weight: .semibold))
