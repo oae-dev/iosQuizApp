@@ -9,70 +9,65 @@ import SwiftUI
 
 struct GameScreen: View {
     @Binding var path: NavigationPath
-    
+    @StateObject var vm = GameViewModel()
     var allQuizConfigs: [QuizScreenConfig]
-    @State var currentQuestion:Int = 0
-    @State var currentScreen: Int = 0
-    @State var selectedAnswer: String = ""
-    @State var score: Int = 0
-    @State var totalQuestions:Int = 0
     let userName: String
-    
-    @State private var showAnswer: Bool = false
     
     var body: some View {
         VStack{
-            Text(allQuizConfigs[currentScreen].title)
+            Text(allQuizConfigs[vm.currentScreen].title)
                 .font(.system(size: 40, weight: .bold))
             
-            Text("Question - \(currentQuestion + 1) / \(allQuizConfigs[currentScreen].questions.count)")
+            Text("Question - \(vm.currentQuestion + 1) / \(allQuizConfigs[vm.currentScreen].questions.count)")
                 .font(.system(size: 30, weight: .bold))
             
             Spacer()
             
-            Text(allQuizConfigs[currentScreen].questions[currentQuestion].question)
+            Text(allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].question)
                 .font(.system(size: 40, weight: .bold))
             
-            let options = allQuizConfigs[currentScreen].questions[currentQuestion].options
-            let correctAnswer = allQuizConfigs[currentScreen].questions[currentQuestion].correctAnswer
+            let options = allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].options
+            let correctAnswer = allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].correctAnswer
             ForEach(0..<options.count) { index in
                 let option = options[index]
-                let iswrong = showAnswer && option == selectedAnswer && option != correctAnswer
+                let iswrong = vm.showAnswer && option == vm.selectedAnswer && option != correctAnswer
 
                 
-                Selector(selected: options[index] == selectedAnswer, ontap: {
-                    selectedAnswer = options[index]
-                }, quiztitle: allQuizConfigs[currentScreen].questions[currentQuestion].options[index], wrongAnswer: iswrong)
+                Selector(selected: options[index] == vm.selectedAnswer, ontap: {
+                    vm.selectedAnswer = options[index]
+                }, quiztitle: allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].options[index], wrongAnswer: iswrong)
             }
             
             Spacer()
             
             Button {
-                showAnswer = true
+                vm.showAnswer = true
                 
-                if selectedAnswer == correctAnswer {
-                    score += 1
+                if vm.selectedAnswer == correctAnswer {
+                    vm.score += 1
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                    totalQuestions += 1
-                    showAnswer = false
-                    selectedAnswer = ""
-                    if currentQuestion < allQuizConfigs[currentScreen].questions.count - 1{
+                    vm.totalQuestions += 1
+                    vm.showAnswer = false
+                    vm.selectedAnswer = ""
+                    if vm.currentQuestion < allQuizConfigs[vm.currentScreen].questions.count - 1{
                         withAnimation (.snappy){
-                            currentQuestion += 1
+                            vm.currentQuestion += 1
                         }
                         
+                        vm.textToSpeach(allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].question)
+                        
                     }
-                    else if currentScreen == allQuizConfigs.count - 1{
-                        path.append(QuizScreens.result(score: score, totalQuestions: totalQuestions, userName: userName))
+                    else if vm.currentScreen == allQuizConfigs.count - 1{
+                        path.append(QuizScreens.result(score: vm.score, totalQuestions: vm.totalQuestions, userName: userName))
                     }
                     else {
                         withAnimation(.bouncy){
-                            currentScreen += 1
+                            vm.currentScreen += 1
                         }
-                        currentQuestion = 0
-                        showAnswer = false
+                        vm.currentQuestion = 0
+                        vm.showAnswer = false
                         print("Next Screen")
                     }
                 }
@@ -98,7 +93,7 @@ struct GameScreen: View {
         .navigationBarBackButtonHidden()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background {
-            AsyncImage(url: URL(string: allQuizConfigs[currentScreen].background)){ phase in
+            AsyncImage(url: URL(string: allQuizConfigs[vm.currentScreen].background)){ phase in
                 switch phase {
                 case .empty:
                     ProgressView()
@@ -115,6 +110,9 @@ struct GameScreen: View {
                 }
             }
             
+        }
+        .onAppear {
+            vm.textToSpeach(allQuizConfigs[vm.currentScreen].questions[vm.currentQuestion].question)
         }
     }
 }
